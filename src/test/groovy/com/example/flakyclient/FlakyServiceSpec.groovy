@@ -51,7 +51,7 @@ class FlakyServiceSpec extends Specification {
         result == new Person("alice")
     }
 
-    def "should retry server errors" () {
+    def "should retry server errors and return fallback" () {
         given:
         mockRestServiceServer.expect(ExpectedCount.twice(),
                 MockRestRequestMatchers.requestTo("http://localhost:9000/hello/alice"))
@@ -61,7 +61,7 @@ class FlakyServiceSpec extends Specification {
         Person result = flakyService.sayHello("alice")
 
         then:
-        HttpServerErrorException ex = thrown()
+        result == new Person("stranger")
         mockRestServiceServer.verify()
     }
 

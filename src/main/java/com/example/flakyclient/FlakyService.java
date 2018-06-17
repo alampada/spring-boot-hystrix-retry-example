@@ -40,7 +40,7 @@ public class FlakyService {
     this.flakyClient = flakyClient;
   }
 
-  @HystrixCommand
+  @HystrixCommand(fallbackMethod = "fallback")
   public Person sayHello(String name) {
     try {
       return doRemoteCall(name);

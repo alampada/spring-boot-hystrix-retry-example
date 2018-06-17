@@ -1,6 +1,5 @@
 package com.example.flakyclient;
 
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,6 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -50,18 +48,15 @@ public class FlakyServiceTests {
     assertEquals(new Person("alice"), result);
   }
 
-  @Test(expected = HttpServerErrorException.class)
+  @Test
   public void shouldRetryServerErrors() {
     mockServer.expect(ExpectedCount.twice(),
         MockRestRequestMatchers.requestTo("http://localhost:9000/hello/alice"))
         .andRespond(withServerError());
-    try {
-      Person result = service.sayHello("alice");
-    }
-    catch (Exception e) {
-      mockServer.verify();
-      throw e;
-    }
+
+    Person result = service.sayHello("alice");
+    assertEquals(new Person("stranger"), result);
+    mockServer.verify();
   }
 
   @Test(expected = HttpClientErrorException.class)
