@@ -4,6 +4,7 @@ import feign.codec.ErrorDecoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.classify.Classifier;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import static feign.FeignException.errorStatus;
 
 @Configuration
+@EnableFeignClients
 public class FlakyClientConfiguration {
 
   @Bean
